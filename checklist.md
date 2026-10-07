@@ -10,7 +10,7 @@
 ## 2. 프로필 (PRD 핵심기능)
 - [x] 프로필 컴포넌트 (`src/components/Profile.tsx`) — 이름, 한줄소개, 원형 프로필사진
 - [x] 모바일 우선 레이아웃 (wireframe.png 기준, 390px 폭 스크린샷으로 확인)
-- [ ] 더미 프로필(이름, 소개, 사진)을 실제 내용으로 교체
+- [ ] 더미 프로필(이름, 소개, 사진)을 실제 내용으로 교체 — 이름·소개 완료, 사진은 사용자 요청으로 비워 둠
 
 ## 3. 링크카드 (PRD 핵심기능)
 - [x] 링크 데이터 정의 (`src/app/page.tsx` 상단 더미 GitHub / LinkedIn / Blog)
@@ -24,3 +24,14 @@
 
 ## 5. 배포
 - [ ] Vercel 배포 및 환경변수 등록
+
+## 6. 메인 화면 디자인 다듬기 (새 기능 없이 모던·미니멀한 Link in Bio 분위기)
+- [x] Pretendard 폰트 설치 (`pretendard` 패키지, dynamic subset CSS)
+- [x] globals.css — 색상 토큰, 크림→살구 그라데이션 배경, 다크 모드 대응
+- [x] layout.tsx — Pretendard 적용, 쓰지 않게 된 Geist Sans 제거
+- [x] Profile.tsx — 둥글고 살짝 입체감 있는 프로필 사진, 이름·소개 타이포
+- [x] LinkCard.tsx — 글래스모피즘 카드, 둥근 모서리, 절제된 호버
+- [x] page.tsx — 좌우·카드 사이 여백 넉넉히
+- [x] lint / build 통과
+- [x] 모바일(390·360px)·데스크톱 스크린샷으로 확인 (라이트·다크)
+- [x] 기기 화면 모드와 상관없이 크림→살구 화면으로 고정 (사용자 결정, 다크 모드 제거)
