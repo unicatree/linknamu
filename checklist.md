@@ -18,9 +18,13 @@
 - [ ] 더미 링크를 실제 URL 로 교체
 
 ## 4. 클릭 수 집계 (PRD 핵심기능)
-- [ ] MongoDB 드라이버 설치, `.env.local` 에 `MONGODB_URI` 설정
-- [ ] 클릭 기록 API (Route Handler)
-- [ ] 링크카드 클릭 시 집계 호출
+- [x] `.env.local` 에 `MONGODB_URI` 설정
+- [x] MongoDB 드라이버 설치, 클라이언트 재사용 모듈 (`src/lib/mongodb.ts`)
+- [x] 링크 데이터를 `src/data/links.ts` 로 분리하고 링크별 고정 `id` 부여
+- [x] 클릭 수 API (`src/app/api/clicks/route.ts`) — GET 전체 조회, POST 1 증가
+- [x] 링크 목록 클라이언트 컴포넌트 (`src/components/LinkList.tsx`) — 처음 0회, 한 번에 받아와 갱신, 클릭 시 집계 호출
+- [x] 링크카드 오른쪽에 작은 글자로 "N회" 표시
+- [x] lint / build 통과, 실제 DB 로 GET·POST 동작 확인, 모바일 스크린샷 확인, 브라우저 클릭 확인 (테스트 데이터는 삭제)
 
 ## 5. 배포
 - [ ] Vercel 배포 및 환경변수 등록

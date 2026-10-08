@@ -52,3 +52,16 @@
 
 - **기기 설정과 상관없이 항상 크림→살구 화면 (사용자 결정).** 다크 모드를 쓰는 방문자에게도 요청한 디자인이 그대로 보여야 하므로 globals.css 의 `prefers-color-scheme: dark` 블록을 지웠다. 색은 `:root` 변수 한 벌만 남는다.
 - `color-scheme` 을 선언하지 않았으므로 브라우저는 스크롤바 같은 기본 UI 도 라이트로 그린다.
+
+## 2026-10-08 링크 클릭 수 집계
+
+- **저장 구조.** DB `linknamu`, 컬렉션 `clicks`, 문서 `{ _id: 링크 id, count }`. 연결 문자열에 DB 이름이 없어서 `src/lib/mongodb.ts` 에서 이름을 정한다. 클릭은 `$inc` + `upsert` 라 처음 눌린 링크는 문서가 새로 생긴다.
+- **링크 목록을 `src/data/links.ts` 로 옮김.** 처음에는 page.tsx 상단 상수였지만 API 도 같은 목록이 필요하다. page.tsx 는 정해진 것 외의 export 를 허용하지 않으므로 별도 파일로 뺐다. 프로필 더미 데이터는 page.tsx 에 그대로 있다.
+- **링크마다 고정 `id` (github, linkedin, blog).** URL 을 키로 쓰면 더미 URL 을 실제 주소로 바꿀 때 클릭 수가 끊긴다. 링크를 지우거나 새로 만들 때만 id 를 바꾼다.
+- **API 는 목록에 있는 id 만 받는다.** 아무 id 로 POST 해서 DB 에 문서가 쌓이는 것을 막는다. 같은 링크를 반복 호출해 숫자를 부풀리는 것은 막지 않는다(로그인·중복 제한은 범위 밖).
+- **GET 에 `await connection()`.** Cache Components 에서는 GET Route Handler 도 빌드 때 미리 만들어질 수 있다. DB 조회도 프리렌더를 멈추게 하지만, 요청 때마다 읽어야 한다는 의도를 코드에 드러내려고 명시했다. 빌드 결과 `/api/clicks` 는 ƒ(Dynamic), `/` 는 ○(Static) 로 나왔다.
+- **클릭 수는 클라이언트에서 받아온다.** 요구사항이 "처음 0회 → 받으면 갱신" 이라 메인 페이지는 정적으로 두고 `LinkList`(클라이언트 컴포넌트)가 마운트 때 GET 을 한 번 부른다. 받아오지 못하면 0회로 남는다.
+- **클릭하면 화면 숫자를 바로 1 올린다.** POST 응답을 기다리지 않는다. 링크가 같은 탭에서 열리는 환경(일부 인앱 브라우저)에서도 요청이 끝까지 가도록 `keepalive: true` 를 켰다. 초기 GET 이 끝나기 전에 누르면 GET 결과가 화면 숫자를 덮어쓸 수 있지만 다음 방문 때 맞춰진다.
+- **카드 배치는 `grid-cols-[1fr_auto_1fr]`.** 양쪽 칸 폭이 같아 제목이 카드 정가운데에 있고, 클릭 수는 오른쪽 칸 끝에 붙는다. absolute 배치와 달리 제목이 길어져도 숫자와 겹치지 않는다.
+- **검증 방법.** `next start` 후 curl 로 GET/POST/잘못된 id(400)를 확인하고, headless Edge 를 CDP(`--remote-debugging-port`)로 조종해 실제 클릭을 확인했다. 테스트로 생긴 문서는 지웠다. 노드 24 는 `WebSocket`, `fetch` 가 내장이라 추가 패키지 없이 CDP 를 쓸 수 있다.
+- **배포 시 Vercel 에도 `MONGODB_URI` 를 등록해야 한다.** Atlas Network Access 에서 Vercel 서버 IP 접근도 허용되어 있어야 한다.
